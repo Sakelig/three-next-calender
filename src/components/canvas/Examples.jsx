@@ -68,27 +68,40 @@ export function Dog(props) {
   return <primitive object={scene} {...props} />
 }
 
-export const Rectangle = ({ route = '/', imagePath='/The_Wiggsters.jpg', ...props }) => {
+export const Rectangle = ({  imagePath='/The_Wiggsters.jpg', onSpotClick, ...props }) => {
   const mesh = useRef(null)
   const router = useRouter()
   const [hovered, hover] = useState(false)
-  const { mouse } = useThree()
+  const { mouse, raycaster, camera } = useThree()
 
   const texture = useTexture(imagePath)
 
   useCursor(hovered)
   useFrame((state, delta) => {
     if (mesh.current) {
-      // Right type of rotation
       mesh.current.rotation.y = mouse.x * 0.3
       mesh.current.rotation.x = mouse.y * 0.2
-      // mesh.current.rotation.z = 0
     }
   })
+
+  const handleClick = (event) => {
+    if (event.uv && onSpotClick) {
+      // Convert UV coordinates to grid position (6x4 = 24 spots)
+      const col = Math.floor(event.uv.x * 6)
+      const row = Math.floor((1 - event.uv.y) * 4) // Flip Y axis
+      const spotIndex = row * 6 + col
+
+      onSpotClick(spotIndex, { row, col, uv: event.uv })
+    } else {
+
+      console.log("else was hit on click")
+    }
+  }
 
   return (
     <mesh
       ref={mesh}
+      onClick={handleClick}
       onPointerOver={() => hover(true)}
       onPointerOut={() => hover(false)}
       {...props}>

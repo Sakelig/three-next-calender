@@ -1,3 +1,11 @@
+- Need timer to show when next box opens
+- Need to draw boxes
+- opens on new page
+- clicked boxes should update the main site and show number as open
+
+
+----------------------------
+
 [![Downloads](https://img.shields.io/npm/dt/create-r3f-app.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/create-r3f-app) [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)
 
 # :japanese_castle: React-Three-Next starter

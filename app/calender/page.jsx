@@ -22,17 +22,24 @@ const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.
 const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
 
 export default function CalendarPage() {
+  const handleSpotClick = (spotIndex, data) => {
+    console.log('Spot clicked:', spotIndex)
+    console.log('Row:', data.row)
+    console.log('Column:', data.col)
+    console.log('UV coordinates:', data.uv)
+    console.log('Full data:', data)
+  }
+
   return (
     <>
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row lg:w-4/5'>
-        <div className='flex w-full flex-col items-start justify-center p-12 text-center md:w-2/5 md:text-left'>
-          <p className='w-full uppercase'>Day 0</p>
+      <div className='mx-auto flex w-full flex-col flex-wrap items-start md:flex-row lg:w-5/5'>
+        <div className='flex w-full flex-col items-start justify-center p-20 text-center md:w-2/5 md:text-left'>
           <h1 className='my-4 text-5xl font-bold leading-tight'>Wiggsters Aniversery Calendar</h1>
         </div>
       </div>
 
       <View orbit className='absolute top-0 flex h-screen w-full flex-col items-center justify-center'>
-        <Rectangle route='/blob' />
+        <Rectangle route='/blob' onSpotClick={handleSpotClick}/>
         <Common />
       </View>
     </>
