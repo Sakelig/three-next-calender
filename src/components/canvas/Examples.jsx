@@ -139,6 +139,14 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
 
+  const { rotation } = useSpring({
+    rotation: isOpen ? [0, Math.PI / 2, 0] : [0, 0, 0],
+    config: {
+      tension: 200,
+      friction: 25
+    }
+  })
+
   const handleClick = (e) => {
     e.stopPropagation()
     if (!isOpen) {
@@ -155,21 +163,21 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
         <meshStandardMaterial color="#8B4513" />
       </mesh>
 
-      {/* Door that rotates from right side */}
-      <group
+      {/* Door that rotates from right side with animation */}
+      <animated.group
         ref={doorRef}
-        position={[0.16, 0, 0.01]} // Moved to right edge
-        rotation={[0, isOpen ? Math.PI / 2 : 0, 0]} // Positive rotation opens outward
+        position={[0.16, 0, 0.01]}
+        rotation={rotation}
       >
         <mesh
-          position={[-0.15, 0, 0]} // Offset door back so it rotates from right edge
+          position={[-0.15, 0, 0]}
           onClick={handleClick}
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
         >
           <boxGeometry args={[0.3, 0.43, 0.015]} />
           <meshStandardMaterial
-            color={isOpen ? "#654321" : "#D2691E"}
+            color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"}
             roughness={0.8}
           />
 
@@ -179,13 +187,13 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
             <meshStandardMaterial color="white" />
           </mesh>
 
-          {/* Door handle - moved to left side of door */}
+          {/* Door handle */}
           <mesh position={[-0.12, -0.05, 0.008]}>
             <sphereGeometry args={[0.015]} />
             <meshStandardMaterial color="#FFD700" />
           </mesh>
         </mesh>
-      </group>
+      </animated.group>
 
       {/* Content behind door */}
       {isOpen && (
