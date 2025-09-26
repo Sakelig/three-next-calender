@@ -1,7 +1,7 @@
-- Need timer to show when next box opens
-- Need to draw boxes
-- opens on new page
-- clicked boxes should update the main site and show number as open
+-[ ] Need timer to show when next box opens
+-[x] Need to draw boxes
+-[ ] opens on new page
+-[ ] clicked boxes should update the main site and show number as open
 
 
 ----------------------------
