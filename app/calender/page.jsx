@@ -11,15 +11,18 @@ const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mo
 export default function CalendarPage() {
   const [selectedDoor, setSelectedDoor] = useState(null)
   const [doorPosition, setDoorPosition] = useState(null)
+  const [doorContent, setDoorContent] = useState(null)
 
-  const handleDoorContentClick = (doorNumber, position) => {
+  const handleDoorContentClick = (doorNumber, position, content) => {
     setSelectedDoor(doorNumber)
     setDoorPosition(position)
+    setDoorContent(content)
   }
 
   const handleBackClick = () => {
     setSelectedDoor(null)
     setDoorPosition(null)
+    setDoorContent(null)
   }
 
   return (
@@ -47,6 +50,33 @@ export default function CalendarPage() {
           >
             Back
           </button>
+        </div>
+      )}
+
+      {/* Video Player Overlay */}
+      {selectedDoor && doorContent?.type === 'video' && (
+        <div style={{
+          position: 'fixed',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          zIndex: 2000,
+          width: '80vw',
+          maxWidth: '800px',
+          backgroundColor: 'rgba(0,0,0,0.9)',
+          padding: '20px',
+          borderRadius: '10px'
+        }}>
+          <video
+            src={doorContent.src}
+            controls
+            autoPlay
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxHeight: '70vh'
+            }}
+          />
         </div>
       )}
 

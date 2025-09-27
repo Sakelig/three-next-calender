@@ -168,13 +168,44 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     const y = (1.5 - row) * 0.7 + randomOffset
     const position = [x, y, 0.16]
 
+    // Define content for all 24 doors
+    const doorContents = {
+      1: { type: 'image', src: '/door-images/dummy-image.png' },
+      2: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      3: { type: 'image', src: '/door-images/dummy-image.png' },
+      4: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      5: { type: 'image', src: '/door-images/dummy-image.png' },
+      6: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      7: { type: 'image', src: '/door-images/dummy-image.png' },
+      8: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      9: { type: 'image', src: '/door-images/dummy-image.png' },
+      10: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      11: { type: 'image', src: '/door-images/dummy-image.png' },
+      12: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      13: { type: 'image', src: '/door-images/dummy-image.png' },
+      14: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      15: { type: 'image', src: '/door-images/dummy-image.png' },
+      16: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      17: { type: 'image', src: '/door-images/dummy-image.png' },
+      18: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      19: { type: 'image', src: '/door-images/dummy-image.png' },
+      20: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      21: { type: 'image', src: '/door-images/dummy-image.png' },
+      22: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      23: { type: 'image', src: '/door-images/dummy-image.png' },
+      24: { type: 'video', src: '/door-videos/dummy-video.mp4' }
+    }
+
+    const doorContent = doorContents[i + 1]
+
     return (
       <Door
         key={i + 1}
         position={position}
         doorNumber={i + 1}
+        content={doorContent}
         onOpen={handleDoorOpen}
-        onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position)}
+        onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position, doorContent)}
         isZoomed={selectedDoor === i + 1}
         isDisabled={selectedDoor && selectedDoor !== i + 1}
       />
@@ -196,10 +227,12 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 }
 
 
-export const Door = ({ position, doorNumber, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
+export const Door = ({ position, doorNumber, content, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
+  const [texture, setTexture] = useState(null)
+  const videoRef = useRef()
 
   const { rotation } = useSpring({
     rotation: isOpen ? [0, Math.PI / 2, 0] : [0, 0, 0],
@@ -208,6 +241,47 @@ export const Door = ({ position, doorNumber, onOpen, onContentClick, isZoomed, i
       friction: 25
     }
   })
+
+  // Load content when door opens
+  useEffect(() => {
+    if (isOpen && content) {
+      if (content.type === 'image') {
+        const loader = new THREE.TextureLoader()
+        loader.load(content.src, (loadedTexture) => {
+          setTexture(loadedTexture)
+        })
+      } else if (content.type === 'video') {
+        const video = document.createElement('video')
+        video.src = content.src
+        video.crossOrigin = 'anonymous'
+        video.loop = true
+        video.muted = true
+        video.playsInline = true
+
+        const videoTexture = new THREE.VideoTexture(video)
+        videoTexture.minFilter = THREE.LinearFilter
+        videoTexture.magFilter = THREE.LinearFilter
+
+        setTexture(videoTexture)
+        videoRef.current = video
+
+        if (isZoomed) {
+          video.play()
+        }
+      }
+    }
+  }, [isOpen, content, isZoomed])
+
+  // Control video playback
+  useEffect(() => {
+    if (videoRef.current) {
+      if (isZoomed) {
+        videoRef.current.play()
+      } else {
+        videoRef.current.pause()
+      }
+    }
+  }, [isZoomed])
 
   const handleDoorClick = (e) => {
     e.stopPropagation()
@@ -250,7 +324,7 @@ export const Door = ({ position, doorNumber, onOpen, onContentClick, isZoomed, i
         </mesh>
       </animated.group>
 
-      {/* Clickable content behind door */}
+      {/* Content behind door */}
       {isOpen && (
         <mesh
           position={[0, 0, -0.01]}
@@ -260,7 +334,8 @@ export const Door = ({ position, doorNumber, onOpen, onContentClick, isZoomed, i
         >
           <boxGeometry args={[0.28, 0.4, 0.01]} />
           <meshStandardMaterial
-            color={isZoomed ? "#FF4444" : hovered ? "#FF8888" : "#FF6B6B"}
+            map={texture}
+            color={texture ? "white" : (isZoomed ? "#FF4444" : hovered ? "#FF8888" : "#FF6B6B")}
           />
         </mesh>
       )}
