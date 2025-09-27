@@ -1,12 +1,13 @@
 'use client'
 
-import { useGLTF, OrbitControls, useTexture, Line, useCursor, MeshDistortMaterial } from '@react-three/drei'
+import { useGLTF, OrbitControls, useTexture, Line, useCursor, MeshDistortMaterial, Text } from '@react-three/drei'
 import { useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDrag } from '@use-gesture/react'
 import { useSpring, animated } from '@react-spring/three'
+import { Html } from '@react-three/drei'
 
 
 export const Blob = ({ route = '/', ...props }) => {
@@ -82,18 +83,15 @@ export const ZoomControls = () => {
   )
 }
 
-export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...props }) => {
-  const groupRef = useRef(null) // Changed from mesh to groupRef
-  const router = useRouter()
-  const [hovered, hover] = useState(false)
+export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, ...props }) => {
+  const groupRef = useRef(null)
   const [openedDoors, setOpenedDoors] = useState(new Set())
   const { mouse } = useThree()
 
   const texture = useTexture(imagePath)
 
-  useCursor(hovered)
   useFrame((state, delta) => {
-    if (groupRef.current) { // Apply to the entire group
+    if (groupRef.current) {
       groupRef.current.rotation.y = mouse.x * 0.3
       groupRef.current.rotation.x = mouse.y * 0.2
     }
@@ -117,6 +115,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...prop
         position={[x, y, 0.16]}
         doorNumber={i + 1}
         onOpen={handleDoorOpen}
+        onContentClick={onDoorContentClick}
       />
     )
   })
@@ -135,7 +134,10 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...prop
   )
 }
 
-export const Door = ({ position, doorNumber, onOpen, ...props }) => {
+
+
+
+export const Door = ({ position, doorNumber, onOpen, onContentClick, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -156,10 +158,13 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
     }
   }
 
+  const handleContentClick = (e) => {
+    e.stopPropagation()
+    onContentClick?.(doorNumber)
+  }
+
   return (
     <group position={position} {...props}>
-
-      {/* Door that rotates from right side with animation */}
       <animated.group
         ref={doorRef}
         position={[0.16, 0, 0.01]}
@@ -177,18 +182,22 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
             roughness={0.8}
           />
 
-          {/* Door number */}
-          <mesh position={[0, 0, 0.008]}>
-            <boxGeometry args={[0.08, 0.08, 0.002]} />
-            <meshStandardMaterial color="white" />
-          </mesh>
-
+          {/* Door number using Text component */}
+          <Text
+            position={[0, 0, 0.008]}
+            fontSize={0.05}
+            color="black"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {doorNumber}
+          </Text>
         </mesh>
       </animated.group>
 
       {/* Content behind door */}
       {isOpen && (
-        <mesh position={[0, 0, -0.01]}>
+        <mesh position={[0, 0, -0.01]} onClick={handleContentClick}>
           <boxGeometry args={[0.28, 0.4, 0.01]} />
           <meshStandardMaterial color="#FF6B6B" />
         </mesh>
