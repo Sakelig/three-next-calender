@@ -1,7 +1,11 @@
 -[ ] Need timer to show when next box opens
--[x] Need to draw boxes
--[ ] opens on new page
 -[ ] clicked boxes should update the main site and show number as open
+-[ ] host on aws
+-[ ] handle new door and content each day
+-[ ] handle new door each day
+-[x] Need to draw boxes
+-[x] Handles images
+-[x] Handles videos
 
 
 ----------------------------
