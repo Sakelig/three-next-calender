@@ -3,6 +3,7 @@
 -[ ] host on aws
 -[ ] handle new door and content each day
 -[ ] handle new door each day
+-[ ] IMPORTANT! Cut doors to match calender spot (after decided on image?)
 -[x] Need to draw boxes
 -[x] Handles images
 -[x] Handles videos
