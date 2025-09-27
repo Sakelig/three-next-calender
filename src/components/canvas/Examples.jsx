@@ -96,9 +96,15 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   useEffect(() => {
     if (selectedDoor && doorPosition) {
       setIsAnimating(true)
-      // Move group to center the door and scale up
-      setTargetGroupPosition([-doorPosition[0] * 2, -doorPosition[1] * 2, 0])
-      setTargetGroupScale(2.5)
+      const scaleFactor = 5
+
+      // More accurate centering - use the exact door position without multipliers
+      setTargetGroupPosition([
+        -doorPosition[0] * scaleFactor,
+        -doorPosition[1] * scaleFactor,
+        0
+      ])
+      setTargetGroupScale(scaleFactor)
     } else if (selectedDoor === null) {
       setIsAnimating(true)
       setTargetGroupPosition([0, 0, 0])
