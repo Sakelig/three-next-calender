@@ -108,7 +108,8 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...prop
     const row = Math.floor(i / 6)
     const col = i % 6
     const x = (col - 2.5) * 0.35
-    const y = (1.5 - row) * 0.5
+    const randomOffset = (Math.sin(i * 12.962) * 0.5 + Math.cos(i * 1.789) * 0.3) * 0.1
+    const y = (1.5 - row) * 0.7 + randomOffset
 
     return (
       <Door
@@ -157,11 +158,6 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
 
   return (
     <group position={position} {...props}>
-      {/* Door frame */}
-      <mesh>
-        <boxGeometry args={[0.32, 0.45, 0.02]} />
-        <meshStandardMaterial color="#8B4513" />
-      </mesh>
 
       {/* Door that rotates from right side with animation */}
       <animated.group
@@ -175,7 +171,7 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
         >
-          <boxGeometry args={[0.3, 0.43, 0.015]} />
+          <boxGeometry args={[0.35, 0.43, 0.015]} />
           <meshStandardMaterial
             color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"}
             roughness={0.8}
@@ -187,11 +183,6 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
             <meshStandardMaterial color="white" />
           </mesh>
 
-          {/* Door handle */}
-          <mesh position={[-0.12, -0.05, 0.008]}>
-            <sphereGeometry args={[0.015]} />
-            <meshStandardMaterial color="#FFD700" />
-          </mesh>
         </mesh>
       </animated.group>
 
