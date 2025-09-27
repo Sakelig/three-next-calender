@@ -1,6 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import { useState } from 'react'
 import { ZoomControls } from '@/components/canvas/Examples'
 
 const Rectangle = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Rectangle), { ssr: false })
@@ -8,19 +9,54 @@ const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.
 const Common = dynamic(() => import('@/components/canvas/View').then((mod) => mod.Common), { ssr: false })
 
 export default function CalendarPage() {
+  const [selectedDoor, setSelectedDoor] = useState(null)
+  const [doorPosition, setDoorPosition] = useState(null)
+
+  const handleDoorContentClick = (doorNumber, position) => {
+    setSelectedDoor(doorNumber)
+    setDoorPosition(position)
+  }
+
+  const handleBackClick = () => {
+    setSelectedDoor(null)
+    setDoorPosition(null)
+  }
+
   return (
     <>
       <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row lg:w-4/5'>
         <div className='flex w-full flex-col items-start justify-center p-12 text-center md:w-2/5 md:text-left'>
           <p className='w-full uppercase'>Day 0</p>
           <h1 className='my-4 text-5xl font-bold leading-tight'>Wiggsters Anniversary Calendar</h1>
-          <p className='text-gray-600'>Drag the doors to open them!</p>
+          <p className='text-gray-600'>Click inside the doors to zoom in!</p>
         </div>
       </div>
 
+      {selectedDoor && (
+        <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 1000 }}>
+          <button
+            onClick={handleBackClick}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#1fb2f5',
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              cursor: 'pointer'
+            }}
+          >
+            Back
+          </button>
+        </div>
+      )}
+
       <View orbit className='absolute top-0 flex h-screen w-full flex-col items-center justify-center'>
-        <Rectangle />
-        <ZoomControls />
+        <Rectangle
+          onDoorContentClick={handleDoorContentClick}
+          selectedDoor={selectedDoor}
+          doorPosition={doorPosition}
+        />
+        <ZoomControls disabled={!!selectedDoor} />
         <Common />
       </View>
     </>

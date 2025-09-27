@@ -69,12 +69,13 @@ export function Dog(props) {
   return <primitive object={scene} {...props} />
 }
 
-export const ZoomControls = () => {
+export const ZoomControls = ({ disabled = false }) => {
   return (
     <OrbitControls
+      enabled={!disabled}
       enableRotate={false}
       enablePan={false}
-      enableZoom={true}
+      enableZoom={!disabled}
       zoomSpeed={1}
       minDistance={4}
       maxDistance={10}
@@ -82,24 +83,73 @@ export const ZoomControls = () => {
   )
 }
 
-export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...props }) => {
-  const groupRef = useRef(null) // Changed from mesh to groupRef
-  const router = useRouter()
-  const [hovered, hover] = useState(false)
+export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, ...props }) => {
+  const groupRef = useRef(null)
+  const { camera, mouse } = useThree()
   const [openedDoors, setOpenedDoors] = useState(new Set())
-  const { mouse } = useThree()
+  const [targetGroupPosition, setTargetGroupPosition] = useState(null)
+  const [targetGroupScale, setTargetGroupScale] = useState(null)
+  const [isAnimating, setIsAnimating] = useState(false)
 
   const texture = useTexture(imagePath)
 
-  useCursor(hovered)
+  useEffect(() => {
+    if (selectedDoor && doorPosition) {
+      setIsAnimating(true)
+      // Move group to center the door and scale up
+      setTargetGroupPosition([-doorPosition[0] * 2, -doorPosition[1] * 2, 0])
+      setTargetGroupScale(2.5)
+    } else if (selectedDoor === null) {
+      setIsAnimating(true)
+      setTargetGroupPosition([0, 0, 0])
+      setTargetGroupScale(1)
+    }
+  }, [selectedDoor, doorPosition])
+
   useFrame((state, delta) => {
-    if (groupRef.current) { // Apply to the entire group
-      groupRef.current.rotation.y = mouse.x * 0.3
-      groupRef.current.rotation.x = mouse.y * 0.2
+    // Group animation only
+    if (targetGroupPosition && targetGroupScale !== null && isAnimating) {
+      const lerpFactor = 0.08
+
+      if (groupRef.current) {
+        // Animate group position and scale
+        groupRef.current.position.x += (targetGroupPosition[0] - groupRef.current.position.x) * lerpFactor
+        groupRef.current.position.y += (targetGroupPosition[1] - groupRef.current.position.y) * lerpFactor
+        groupRef.current.position.z += (targetGroupPosition[2] - groupRef.current.position.z) * lerpFactor
+
+        groupRef.current.scale.x += (targetGroupScale - groupRef.current.scale.x) * lerpFactor
+        groupRef.current.scale.y += (targetGroupScale - groupRef.current.scale.y) * lerpFactor
+        groupRef.current.scale.z += (targetGroupScale - groupRef.current.scale.z) * lerpFactor
+      }
+
+      const groupDistance = groupRef.current ? Math.sqrt(
+        Math.pow(targetGroupPosition[0] - groupRef.current.position.x, 2) +
+        Math.pow(targetGroupPosition[1] - groupRef.current.position.y, 2)
+      ) + Math.abs(targetGroupScale - groupRef.current.scale.x) : 0
+
+      if (groupDistance < 0.1) {
+        setIsAnimating(false)
+      }
+    }
+
+    // Handle group rotation smoothly
+    if (groupRef.current && !selectedDoor && !isAnimating) {
+      const targetRotationY = mouse.x * 0.3
+      const targetRotationX = mouse.y * 0.2
+
+      groupRef.current.rotation.y += (targetRotationY - groupRef.current.rotation.y) * 0.1
+      groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * 0.1
+    }
+
+    // Lock rotation when zoomed in
+    if (selectedDoor && groupRef.current) {
+      groupRef.current.rotation.y = 0
+      groupRef.current.rotation.x = 0
     }
   })
 
   const handleDoorOpen = (doorNumber) => {
+    if (selectedDoor) return
     setOpenedDoors(prev => new Set(prev).add(doorNumber))
     console.log(`Door ${doorNumber} opened!`)
   }
@@ -110,13 +160,17 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...prop
     const x = (col - 2.5) * 0.35
     const randomOffset = (Math.sin(i * 12.962) * 0.5 + Math.cos(i * 1.789) * 0.3) * 0.1
     const y = (1.5 - row) * 0.7 + randomOffset
+    const position = [x, y, 0.16]
 
     return (
       <Door
         key={i + 1}
-        position={[x, y, 0.16]}
+        position={position}
         doorNumber={i + 1}
         onOpen={handleDoorOpen}
+        onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position)}
+        isZoomed={selectedDoor === i + 1}
+        isDisabled={selectedDoor && selectedDoor !== i + 1}
       />
     )
   })
@@ -135,7 +189,8 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onSpotClick, ...prop
   )
 }
 
-export const Door = ({ position, doorNumber, onOpen, ...props }) => {
+
+export const Door = ({ position, doorNumber, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -148,18 +203,23 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
     }
   })
 
-  const handleClick = (e) => {
+  const handleDoorClick = (e) => {
     e.stopPropagation()
-    if (!isOpen) {
+    if (!isOpen && !isDisabled) {
       setIsOpen(true)
       onOpen?.(doorNumber)
     }
   }
 
+  const handleContentClick = (e) => {
+    e.stopPropagation()
+    if (isOpen && !isZoomed) {
+      onContentClick?.(doorNumber)
+    }
+  }
+
   return (
     <group position={position} {...props}>
-
-      {/* Door that rotates from right side with animation */}
       <animated.group
         ref={doorRef}
         position={[0.16, 0, 0.01]}
@@ -167,8 +227,8 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
       >
         <mesh
           position={[-0.15, 0, 0]}
-          onClick={handleClick}
-          onPointerOver={() => setHovered(true)}
+          onClick={handleDoorClick}
+          onPointerOver={() => !isDisabled && setHovered(true)}
           onPointerOut={() => setHovered(false)}
         >
           <boxGeometry args={[0.35, 0.43, 0.015]} />
@@ -177,20 +237,25 @@ export const Door = ({ position, doorNumber, onOpen, ...props }) => {
             roughness={0.8}
           />
 
-          {/* Door number */}
           <mesh position={[0, 0, 0.008]}>
             <boxGeometry args={[0.08, 0.08, 0.002]} />
             <meshStandardMaterial color="white" />
           </mesh>
-
         </mesh>
       </animated.group>
 
-      {/* Content behind door */}
+      {/* Clickable content behind door */}
       {isOpen && (
-        <mesh position={[0, 0, -0.01]}>
+        <mesh
+          position={[0, 0, -0.01]}
+          onClick={handleContentClick}
+          onPointerOver={() => !isZoomed && setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+        >
           <boxGeometry args={[0.28, 0.4, 0.01]} />
-          <meshStandardMaterial color="#FF6B6B" />
+          <meshStandardMaterial
+            color={isZoomed ? "#FF4444" : hovered ? "#FF8888" : "#FF6B6B"}
+          />
         </mesh>
       )}
     </group>
