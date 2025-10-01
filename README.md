@@ -1,6 +1,7 @@
 -[ ] Need timer to show when next box opens
 -[ ] clicked boxes should update the main site and show number as open
--[ ] host on aws
+-[x] host on aws
+-[ ] should use my domain adventcalender.sakelig
 -[ ] handle new door and content each day
 -[ ] handle new door each day
 -[ ] IMPORTANT! Cut doors to match calender spot (after decided on image?)
