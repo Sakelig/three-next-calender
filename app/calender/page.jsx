@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ZoomControls } from '@/components/canvas/Examples'
 
 const Rectangle = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Rectangle), { ssr: false })
@@ -12,18 +12,32 @@ export default function CalendarPage() {
   const [selectedDoor, setSelectedDoor] = useState(null)
   const [doorPosition, setDoorPosition] = useState(null)
   const [doorContent, setDoorContent] = useState(null)
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false)
 
   const handleDoorContentClick = (doorNumber, position, content) => {
     setSelectedDoor(doorNumber)
     setDoorPosition(position)
     setDoorContent(content)
+    setShowVideoPlayer(false) // Reset video player
   }
 
   const handleBackClick = () => {
     setSelectedDoor(null)
     setDoorPosition(null)
     setDoorContent(null)
+    setShowVideoPlayer(false)
   }
+
+  // Show video player after zoom animation completes
+  useEffect(() => {
+    if (selectedDoor && doorContent?.type === 'video') {
+      const timer = setTimeout(() => {
+        setShowVideoPlayer(true)
+      }, 500) // 1 second delay to ensure zoom animation is complete
+
+      return () => clearTimeout(timer)
+    }
+  }, [selectedDoor, doorContent])
 
   return (
     <>
@@ -53,8 +67,8 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Video Player Overlay */}
-      {selectedDoor && doorContent?.type === 'video' && (
+      {/* Video Player Overlay - only shows after delay */}
+      {showVideoPlayer && doorContent?.type === 'video' && (
         <div style={{
           position: 'fixed',
           top: '50%',
@@ -65,7 +79,8 @@ export default function CalendarPage() {
           maxWidth: '800px',
           backgroundColor: 'rgba(0,0,0,0.9)',
           padding: '20px',
-          borderRadius: '10px'
+          borderRadius: '10px',
+          animation: 'fadeIn 0.3s ease-out'
         }}>
           <video
             src={doorContent.src}
@@ -89,6 +104,13 @@ export default function CalendarPage() {
         <ZoomControls disabled={!!selectedDoor} />
         <Common />
       </View>
+
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </>
   )
 }
