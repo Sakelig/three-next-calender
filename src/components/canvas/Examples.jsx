@@ -69,7 +69,18 @@ export function Dog(props) {
   return <primitive object={scene} {...props} />
 }
 
-export const ZoomControls = ({ disabled = false }) => {
+export const ZoomControls = ({ disabled = false, defaultDistance = 6 }) => {
+  const { camera } = useThree()
+
+  useEffect(() => {
+    if (camera) {
+      // Check if it's a mobile device based on screen width
+      const isMobile = window.innerWidth <= 768
+      const distance = isMobile ? Math.max(defaultDistance + 3, 10) : defaultDistance
+      camera.position.setZ(distance)
+    }
+  }, [camera, defaultDistance])
+
   return (
     <OrbitControls
       enabled={!disabled}
@@ -78,10 +89,12 @@ export const ZoomControls = ({ disabled = false }) => {
       enableZoom={!disabled}
       zoomSpeed={1}
       minDistance={4}
-      maxDistance={10}
+      maxDistance={15}
     />
   )
 }
+
+
 
 export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, ...props }) => {
   const groupRef = useRef(null)

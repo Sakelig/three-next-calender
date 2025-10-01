@@ -33,7 +33,7 @@ export default function CalendarPage() {
     if (selectedDoor && doorContent?.type === 'video') {
       const timer = setTimeout(() => {
         setShowVideoPlayer(true)
-      }, 500) // 1 second delay to ensure zoom animation is complete
+      }, 500) // 0.5 second delay to ensure zoom animation is complete
 
       return () => clearTimeout(timer)
     }
@@ -41,11 +41,10 @@ export default function CalendarPage() {
 
   return (
     <>
-      <div className='mx-auto flex w-full flex-col flex-wrap items-center md:flex-row lg:w-4/5'>
-        <div className='flex w-full flex-col items-start justify-center p-12 text-center md:w-2/5 md:text-left'>
-          <p className='w-full uppercase'>Day 0</p>
-          <h1 className='my-4 text-5xl font-bold leading-tight'>Wiggsters Anniversary Calendar</h1>
-          <p className='text-gray-600'>Click inside the doors to zoom in!</p>
+      <div className='mx-auto flex w-full flex-col flex-wrap items-center px-4 md:flex-row md:px-0 lg:w-4/5'>
+        <div className='flex w-full flex-col items-start justify-center p-4 text-center sm:p-6 md:w-2/5 md:p-12 md:text-left'>
+          <p className='w-full text-xs uppercase sm:text-sm md:text-base'>Day 0</p>
+          <h1 className='my-2 text-xl font-bold leading-tight sm:text-2xl md:my-4 md:text-5xl'>Wiggsters Anniversary Calendar</h1>
         </div>
       </div>
 
@@ -54,12 +53,13 @@ export default function CalendarPage() {
           <button
             onClick={handleBackClick}
             style={{
-              padding: '10px 20px',
+              padding: '8px 16px',
               backgroundColor: '#1fb2f5',
               color: 'white',
               border: 'none',
               borderRadius: '5px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontSize: '14px'
             }}
           >
             Back
@@ -101,7 +101,7 @@ export default function CalendarPage() {
           selectedDoor={selectedDoor}
           doorPosition={doorPosition}
         />
-        <ZoomControls disabled={!!selectedDoor} />
+        <ZoomControls disabled={!!selectedDoor} defaultDistance={8} />
         <Common />
       </View>
 
