@@ -1,10 +1,14 @@
 -[ ] Need timer to show when next box opens
 -[ ] clicked boxes should update the main site and show number as open
+-[ ] IMPORTANT! Cut doors to match calender spot (after decided on image?)
 -[x] host on aws
--[ ] should use my domain adventcalender.sakelig
+-[x] should use my domain adventcalender.sakelig
+-[ ] APIGATE way with simple go lambda
+-[ ] frontend should call backend which should call the apigateway endpoint
+-[ ] s3 bucket with content
+-[ ] lambda gets content from s3 based on request
 -[ ] handle new door and content each day
 -[ ] handle new door each day
--[ ] IMPORTANT! Cut doors to match calender spot (after decided on image?)
 -[x] Need to draw boxes
 -[x] Handles images
 -[x] Handles videos
