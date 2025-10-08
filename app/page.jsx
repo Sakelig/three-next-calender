@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 
 export default function Page() {
@@ -8,6 +9,21 @@ export default function Page() {
   const handleClick = () => {
     router.push('/calender')
   }
+
+  // API call on component mount
+  useEffect(() => {
+    const callAPI = async () => {
+      try {
+        const response = await fetch('/api/hello');
+        const data = await response.json();
+        console.log(data); // Will log: { message: "Hello World" }
+      } catch (error) {
+        console.error('API call failed:', error);
+      }
+    };
+
+    callAPI();
+  }, []);
 
   return (
     <div
