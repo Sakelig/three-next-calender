@@ -332,7 +332,9 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
           {outsideTexture ? (
             <meshStandardMaterial
               map={outsideTexture}
-              roughness={0.8}
+              roughness={hovered ? 0.5 : 0.8}
+              emissive={isOpen ? "#000000" : hovered ? "#e8fdff" : "#000000"}
+              emissiveIntensity={hovered ? 0.3 : 0}
             />
           ) : (
             <meshStandardMaterial
