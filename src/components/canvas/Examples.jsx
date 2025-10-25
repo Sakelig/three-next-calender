@@ -185,7 +185,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     // Define content for all 24 doors
     const doorContents = {
       1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/The_Wiggsters.jpg' },
-      2: { type: 'video', src: '/door-videos/dummy-video.mp4' },
+      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/dummyimage2.png' },
       3: { type: 'image', src: '/door-images/dummy-image.png' },
       4: { type: 'video', src: '/door-videos/dummy-video.mp4' },
       5: { type: 'image', src: '/door-images/dummy-image.png' },
