@@ -178,7 +178,8 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     const col = i % 6
     const x = (col - 2.5) * 0.35
     const randomOffset = (Math.sin(i * 12.962) * 0.5 + Math.cos(i * 1.789) * 0.3) * 0.1
-    const y = (1.5 - row) * 0.7 + randomOffset
+    // const y = (1.5 - row) * 0.7 + randomOffset
+    const y = (1.5 - row) * 0.7
     const position = [x, y, 0.16]
 
     // Define content for all 24 doors
