@@ -39,6 +39,21 @@ export default function CalendarPage() {
     }
   }, [selectedDoor, doorContent])
 
+  // Add escape key listener to zoom back out
+  useEffect(() => {
+    const handleEscapeKey = (event) => {
+      if (event.key === 'Escape' && selectedDoor) {
+        handleBackClick()
+      }
+    }
+
+    window.addEventListener('keydown', handleEscapeKey)
+
+    return () => {
+      window.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [selectedDoor])
+
   return (
     <>
       <div className='mx-auto flex w-full flex-col flex-wrap items-center px-4 md:flex-row md:px-0 lg:w-4/5'>
