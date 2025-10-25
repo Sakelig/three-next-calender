@@ -322,34 +322,31 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
         position={[0.16, 0, 0.01]}
         rotation={rotation}
       >
-        <mesh
-          position={[-0.15, 0, 0]}
-          onClick={handleDoorClick}
-          onPointerOver={() => !isDisabled && setHovered(true)}
-          onPointerOut={() => setHovered(false)}
-        >
-          <boxGeometry args={[0.35, 0.43, 0.015]} />
-          {outsideTexture ? (
-            <meshStandardMaterial
-              map={outsideTexture}
-              roughness={hovered ? 0.5 : 0.8}
-              emissive={isOpen ? "#000000" : hovered ? "#e8fdff" : "#000000"}
-              emissiveIntensity={hovered ? 0.3 : 0}
-            />
-          ) : (
-            <meshStandardMaterial
-              color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"}
-              roughness={0.8}
-            />
-          )}
-
-          {!outsideTexture && (
-            <mesh position={[0, 0, 0.008]}>
-              <boxGeometry args={[0.08, 0.08, 0.002]} />
-              <meshStandardMaterial color="white" />
+        {/* Door with texture on front face only */}
+        {outsideTexture ? (
+          <>
+            {/* Main door box with all solid color sides */}
+            <mesh position={[-0.15, 0, 0]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
+              <boxGeometry args={[0.35, 0.43, 0.015]} />
+              <meshStandardMaterial color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"} roughness={0.8} />
             </mesh>
-          )}
-        </mesh>
+            {/* Front face with texture as overlay */}
+            <mesh position={[-0.15, 0, 0.0076]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
+              <planeGeometry args={[0.35, 0.43]} />
+              <meshStandardMaterial
+                map={outsideTexture}
+                roughness={hovered ? 0.5 : 0.8}
+                emissive={isOpen ? "#000000" : hovered ? "#e8fdff" : "#000000"}
+                emissiveIntensity={hovered ? 0.2 : 0}
+              />
+            </mesh>
+          </>
+        ) : (
+          <mesh position={[-0.15, 0, 0]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
+            <boxGeometry args={[0.35, 0.43, 0.015]} />
+            <meshStandardMaterial color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"} roughness={0.8} />
+          </mesh>
+        )}
       </animated.group>
 
       {/* Content behind door */}
