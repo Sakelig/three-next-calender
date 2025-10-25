@@ -233,7 +233,6 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
         <boxGeometry args={[2.2, 2.8, 0.3]} />
         <meshStandardMaterial
           map={texture}
-          color="#8B4513"
         />
       </mesh>
       {doors}
