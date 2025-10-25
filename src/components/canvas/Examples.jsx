@@ -184,7 +184,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 
     // Define content for all 24 doors
     const doorContents = {
-      1: { type: 'image', src: '/door-images/dummy-image.png' },
+      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/The_Wiggsters.jpg' },
       2: { type: 'video', src: '/door-videos/dummy-video.mp4' },
       3: { type: 'image', src: '/door-images/dummy-image.png' },
       4: { type: 'video', src: '/door-videos/dummy-video.mp4' },
@@ -218,6 +218,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
         position={position}
         doorNumber={i + 1}
         content={doorContent}
+        outsideImage={doorContent?.outsideImage}
         onOpen={handleDoorOpen}
         onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position, doorContent)}
         isZoomed={selectedDoor === i + 1}
@@ -241,12 +242,15 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 }
 
 
-export const Door = ({ position, doorNumber, content, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
+export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [texture, setTexture] = useState(null)
   const videoRef = useRef()
+
+  // Use useTexture hook for outside image - this is more reliable in R3F
+  const outsideTexture = outsideImage ? useTexture(outsideImage) : null
 
   const { rotation } = useSpring({
     rotation: isOpen ? [0, Math.PI / 2, 0] : [0, 0, 0],
@@ -326,15 +330,24 @@ export const Door = ({ position, doorNumber, content, onOpen, onContentClick, is
           onPointerOut={() => setHovered(false)}
         >
           <boxGeometry args={[0.35, 0.43, 0.015]} />
-          <meshStandardMaterial
-            color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"}
-            roughness={0.8}
-          />
+          {outsideTexture ? (
+            <meshStandardMaterial
+              map={outsideTexture}
+              roughness={0.8}
+            />
+          ) : (
+            <meshStandardMaterial
+              color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"}
+              roughness={0.8}
+            />
+          )}
 
-          <mesh position={[0, 0, 0.008]}>
-            <boxGeometry args={[0.08, 0.08, 0.002]} />
-            <meshStandardMaterial color="white" />
-          </mesh>
+          {!outsideTexture && (
+            <mesh position={[0, 0, 0.008]}>
+              <boxGeometry args={[0.08, 0.08, 0.002]} />
+              <meshStandardMaterial color="white" />
+            </mesh>
+          )}
         </mesh>
       </animated.group>
 
