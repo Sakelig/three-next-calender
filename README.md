@@ -1,6 +1,7 @@
 -[ ] Need timer to show when next box opens
--[ ] clicked boxes should update the main site and show number as open
--[ ] IMPORTANT! Cut doors to match calender spot (after decided on image?)
+-[ ] clicked boxes should update the main site and show number as open for each user? save state locally?
+-[x] Each door can now have their own image
+-[ ] IMPORTANT! Cut doors to match calender spot and add calender number
 -[x] host on aws
 -[x] should use my domain adventcalender.sakelig
 -[x] APIGATE way with simple go lambda
@@ -8,7 +9,6 @@
 -[ ] s3 bucket with content
 -[ ] lambda gets content from s3 based on request
 -[ ] handle new door and content each day
--[ ] handle new door each day
 -[ ] security group for amplify and lambda/api gateway
 -[x] Need to draw boxes
 -[x] Handles images
