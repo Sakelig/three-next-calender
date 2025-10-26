@@ -13,6 +13,7 @@
 -[x] Need to draw boxes
 -[x] Handles images
 -[x] Handles videos
+-[x] node cutDoors.js to make the doors
 
 
 ## image data

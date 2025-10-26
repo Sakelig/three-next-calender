@@ -177,37 +177,35 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     const row = Math.floor(i / 6)
     const col = i % 6
     const x = (col - 2.5) * 0.35
-    const randomOffset = (Math.sin(i * 12.962) * 0.5 + Math.cos(i * 1.789) * 0.3) * 0.1
-    // const y = (1.5 - row) * 0.7 + randomOffset
     const y = (1.5 - row) * 0.7
     const position = [x, y, 0.135]
 
     // Define content for all 24 doors
     const doorContents = {
-      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/wiggsters-a1-3.jpg' },
-      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/dummyimage2.png' },
-      3: { type: 'image', src: '/door-images/dummy-image.png' },
-      4: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      5: { type: 'image', src: '/door-images/dummy-image.png' },
-      6: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      7: { type: 'image', src: '/door-images/dummy-image.png' },
-      8: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      9: { type: 'image', src: '/door-images/dummy-image.png' },
-      10: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      11: { type: 'image', src: '/door-images/dummy-image.png' },
-      12: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      13: { type: 'image', src: '/door-images/dummy-image.png' },
-      14: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      15: { type: 'image', src: '/door-images/dummy-image.png' },
-      16: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      17: { type: 'image', src: '/door-images/dummy-image.png' },
-      18: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      19: { type: 'image', src: '/door-images/dummy-image.png' },
-      20: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      21: { type: 'image', src: '/door-images/dummy-image.png' },
-      22: { type: 'video', src: '/door-videos/dummy-video.mp4' },
-      23: { type: 'image', src: '/door-images/dummy-image.png' },
-      24: { type: 'video', src: '/door-videos/dummy-video.mp4' }
+      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-1.png' },
+      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-2.png' },
+      3: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-3.png' },
+      4: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-4.png' },
+      5: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-5.png' },
+      6: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-6.png' },
+      7: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-7.png' },
+      8: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-8.png' },
+      9: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-9.png' },
+      10: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-10.png' },
+      11: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-11.png' },
+      12: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-12.png' },
+      13: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-13.png' },
+      14: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-14.png' },
+      15: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-15.png' },
+      16: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-16.png' },
+      17: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-17.png' },
+      18: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-18.png' },
+      19: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-19.png' },
+      20: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-20.png' },
+      21: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-21.png' },
+      22: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-22.png' },
+      23: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-23.png' },
+      24: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-24.png' }
     }
 
     const doorContent = doorContents[i + 1]
