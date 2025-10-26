@@ -180,11 +180,11 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     const randomOffset = (Math.sin(i * 12.962) * 0.5 + Math.cos(i * 1.789) * 0.3) * 0.1
     // const y = (1.5 - row) * 0.7 + randomOffset
     const y = (1.5 - row) * 0.7
-    const position = [x, y, 0.16]
+    const position = [x, y, 0.135]
 
     // Define content for all 24 doors
     const doorContents = {
-      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/The_Wiggsters.jpg' },
+      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/wiggsters-a1-3.jpg' },
       2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/dummyimage2.png' },
       3: { type: 'image', src: '/door-images/dummy-image.png' },
       4: { type: 'video', src: '/door-videos/dummy-video.mp4' },
@@ -249,7 +249,9 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
   const videoRef = useRef()
 
   // Use useTexture hook for outside image - this is more reliable in R3F
-  const outsideTexture = outsideImage ? useTexture(outsideImage) : null
+  // Always call the hook, but pass null if no image
+  const outsideTexture = useTexture(outsideImage || '/door-images/dummy-image.png')
+  const hasOutsideImage = !!outsideImage
 
   const { rotation } = useSpring({
     rotation: isOpen ? [0, Math.PI / 2, 0] : [0, 0, 0],
@@ -323,7 +325,7 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
         rotation={rotation}
       >
         {/* Door with texture on front face only */}
-        {outsideTexture ? (
+        {hasOutsideImage ? (
           <>
             {/* Main door box with all solid color sides */}
             <mesh position={[-0.15, 0, 0]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
@@ -331,7 +333,7 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
               <meshStandardMaterial color={isOpen ? "#654321" : hovered ? "#E2722E" : "#D2691E"} roughness={0.8} />
             </mesh>
             {/* Front face with texture as overlay */}
-            <mesh position={[-0.15, 0, 0.0076]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
+            <mesh position={[-0.15, 0, 0.008]} onClick={handleDoorClick} onPointerOver={() => !isDisabled && setHovered(true)} onPointerOut={() => setHovered(false)}>
               <planeGeometry args={[0.35, 0.43]} />
               <meshStandardMaterial
                 map={outsideTexture}
@@ -352,12 +354,12 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
       {/* Content behind door */}
       {isOpen && (
         <mesh
-          position={[0, 0, -0.01]}
+          position={[0, 0, 0.01]}
           onClick={handleContentClick}
           onPointerOver={() => !isZoomed && setHovered(true)}
           onPointerOut={() => setHovered(false)}
         >
-          <boxGeometry args={[0.28, 0.4, 0.01]} />
+          <boxGeometry args={[0.28, 0.4, 0.015]} />
           <meshStandardMaterial
             map={texture}
             color={texture ? "white" : (isZoomed ? "#FF4444" : hovered ? "#FF8888" : "#FF6B6B")}
