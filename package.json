@@ -13,6 +13,7 @@
     "lint": "next lint --fix --dir app",
     "dev": "next dev",
     "build": "next build",
+    "doors": "node cutDoors.js",
     "analyze": "ANALYZE=true next build",
     "start": "next start"
   },

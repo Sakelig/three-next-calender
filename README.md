@@ -1,7 +1,7 @@
 -[ ] Need timer to show when next box opens
 -[ ] clicked boxes should update the main site and show number as open for each user? save state locally?
 -[x] Each door can now have their own image
--[ ] IMPORTANT! Cut doors to match calender spot and add calender number
+-[x] IMPORTANT! Cut doors to match calender spot and add calender number
 -[x] host on aws
 -[x] should use my domain adventcalender.sakelig
 -[x] APIGATE way with simple go lambda

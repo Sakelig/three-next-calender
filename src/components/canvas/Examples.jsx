@@ -182,8 +182,8 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 
     // Define content for all 24 doors
     const doorContents = {
-      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-1.png' },
-      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-2.png' },
+      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-1.jpg' },
+      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-2.jpg' },
       3: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-3.png' },
       4: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-4.png' },
       5: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-5.png' },
