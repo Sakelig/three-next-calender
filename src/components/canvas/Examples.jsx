@@ -153,8 +153,8 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 
     // Handle group rotation smoothly
     if (groupRef.current && !selectedDoor && !isAnimating) {
-      const targetRotationY = mouse.x * -0.3
-      const targetRotationX = mouse.y * 0.2
+      const targetRotationY = mouse.x * -0.4
+      const targetRotationX = mouse.y * 0.3
 
       groupRef.current.rotation.y += (targetRotationY - groupRef.current.rotation.y) * 0.1
       groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * 0.1
