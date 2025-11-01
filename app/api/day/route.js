@@ -6,17 +6,17 @@ export async function GET() {
       throw new Error('WAIFU_API_URL environment variable is not set');
     }
 
-    const response = await fetch(apiUrl + "/api/test");
+    const response = await fetch(apiUrl + "/api/day");
 
     if (!response.ok) {
       throw new Error('Failed to fetch waifu data');
     }
 
-    const waifuData = await response.json();
+    const dayResponse = await response.json();
 
     return Response.json({
       message: "Hello World",
-      waifuData: waifuData
+      dayData: dayResponse
     });
   } catch (error) {
     console.error('Error fetching waifu data:', error);

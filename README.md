@@ -8,7 +8,7 @@
 -[x] frontend should call backend which should call the apigateway endpoint
 -[ ] s3 bucket with content
 -[ ] lambda gets content from s3 based on request
--[ ] handle new door and content each day
+-[x] handle new door and content each day
 -[ ] security group for amplify and lambda/api gateway
 -[x] Need to draw boxes
 -[x] Handles images

@@ -13,12 +13,37 @@ export default function CalendarPage() {
   const [doorPosition, setDoorPosition] = useState(null)
   const [doorContent, setDoorContent] = useState(null)
   const [showVideoPlayer, setShowVideoPlayer] = useState(false)
+  const [currentDay, setCurrentDay] = useState(null)
+
+  // Fetch current day from API
+  useEffect(() => {
+    const fetchCurrentDay = async () => {
+      try {
+        const response = await fetch('/api/day')
+        const data = await response.json()
+        // TODO DELETE THIS - just for testing days
+        // setCurrentDay(data.dayData?.day || 0)
+        setCurrentDay(3)
+      } catch (error) {
+        console.error('Failed to fetch current day:', error)
+        setCurrentDay(0)
+      }
+    }
+
+    fetchCurrentDay()
+  }, [])
 
   const handleDoorContentClick = (doorNumber, position, content) => {
+    // Check if door is unlocked
+    if (currentDay !== null && doorNumber > currentDay) {
+      console.log(`Door ${doorNumber} is locked. Current day is ${currentDay}`)
+      return
+    }
+
     setSelectedDoor(doorNumber)
     setDoorPosition(position)
     setDoorContent(content)
-    setShowVideoPlayer(false) // Reset video player
+    setShowVideoPlayer(false)
   }
 
   const handleBackClick = () => {
@@ -28,18 +53,16 @@ export default function CalendarPage() {
     setShowVideoPlayer(false)
   }
 
-  // Show video player after zoom animation completes
   useEffect(() => {
     if (selectedDoor && doorContent?.type === 'video') {
       const timer = setTimeout(() => {
         setShowVideoPlayer(true)
-      }, 500) // 0.5 second delay to ensure zoom animation is complete
+      }, 500)
 
       return () => clearTimeout(timer)
     }
   }, [selectedDoor, doorContent])
 
-  // Add escape key listener to zoom back out
   useEffect(() => {
     const handleEscapeKey = (event) => {
       if (event.key === 'Escape' && selectedDoor) {
@@ -58,7 +81,9 @@ export default function CalendarPage() {
     <>
       <div className='mx-auto flex w-full flex-col flex-wrap items-center px-4 md:flex-row md:px-0 lg:w-4/5'>
         <div className='flex w-full flex-col items-start justify-center p-4 text-center sm:p-6 md:w-2/5 md:p-12 md:text-left'>
-          <p className='w-full text-xs uppercase sm:text-sm md:text-base'>Day 0</p>
+          <p className='w-full text-xs uppercase sm:text-sm md:text-base'>
+            Day {currentDay !== null ? currentDay : '...'}
+          </p>
           <h1 className='my-2 text-xl font-bold leading-tight sm:text-2xl md:my-4 md:text-5xl'>Wiggsters Anniversary Calendar</h1>
         </div>
       </div>
@@ -82,7 +107,6 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* Video Player Overlay - only shows after delay */}
       {showVideoPlayer && doorContent?.type === 'video' && (
         <div style={{
           position: 'fixed',
@@ -115,6 +139,7 @@ export default function CalendarPage() {
           onDoorContentClick={handleDoorContentClick}
           selectedDoor={selectedDoor}
           doorPosition={doorPosition}
+          currentDay={currentDay}
         />
         <ZoomControls disabled={!!selectedDoor} defaultDistance={8} />
         <Common />

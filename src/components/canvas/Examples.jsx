@@ -96,7 +96,7 @@ export const ZoomControls = ({ disabled = false, defaultDistance = 6 }) => {
 
 
 
-export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, ...props }) => {
+export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, currentDay, ...props }) => {
   const groupRef = useRef(null)
   const { camera, mouse } = useThree()
   const [openedDoors, setOpenedDoors] = useState(new Set())
@@ -179,48 +179,52 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     const x = (col - 2.5) * 0.35
     const y = (1.5 - row) * 0.7
     const position = [x, y, 0.135]
+    const doorNumber = i + 1
 
     // Define content for all 24 doors
     const doorContents = {
-      1: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-1.jpg' },
-      2: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-2.jpg' },
-      3: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-3.png' },
-      4: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-4.png' },
-      5: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-5.png' },
-      6: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-6.png' },
-      7: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-7.png' },
-      8: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-8.png' },
-      9: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-9.png' },
-      10: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-10.png' },
-      11: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-11.png' },
-      12: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-12.png' },
-      13: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-13.png' },
-      14: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-14.png' },
-      15: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-15.png' },
-      16: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-16.png' },
-      17: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-17.png' },
-      18: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-18.png' },
-      19: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-19.png' },
-      20: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-20.png' },
-      21: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-21.png' },
-      22: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-22.png' },
-      23: { type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-23.png' },
-      24: { type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-24.png' }
+      1: { doorNumber: 1, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-1.jpg' },
+      2: { doorNumber: 5, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-2.jpg' },
+      3: { doorNumber: 10, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-3.png' },
+      4: { doorNumber: 19, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-4.png' },
+      5: { doorNumber: 8, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-5.png' },
+      6: { doorNumber: 2, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-6.png' },
+      7: { doorNumber: 17, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-7.png' },
+      8: { doorNumber: 6, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-8.png' },
+      9: { doorNumber: 11, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-9.png' },
+      10: { doorNumber: 3, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-10.png' },
+      11: { doorNumber: 21, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-11.png' },
+      12: { doorNumber: 7, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-12.png' },
+      13: { doorNumber: 4, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-13.png' },
+      14: { doorNumber: 13, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-14.png' },
+      15: { doorNumber: 24, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-15.png' },
+      16: { doorNumber: 12, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-16.png' },
+      17: { doorNumber: 15, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-17.png' },
+      18: { doorNumber: 23, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-18.png' },
+      19: { doorNumber: 18, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-19.png' },
+      20: { doorNumber: 14, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-20.png' },
+      21: { doorNumber: 22, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-21.png' },
+      22: { doorNumber: 16, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-22.png' },
+      23: { doorNumber: 9, type: 'image', src: '/door-images/dummy-image.png', outsideImage: '/door-outside-images/door-23.png' },
+      24: { doorNumber: 20, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-24.png' }
     }
 
     const doorContent = doorContents[i + 1]
+    const isLocked = currentDay !== null && doorContent.doorNumber > currentDay
 
     return (
       <Door
-        key={i + 1}
+        key={doorNumber}
         position={position}
-        doorNumber={i + 1}
+        doorNumber={doorNumber}
         content={doorContent}
         outsideImage={doorContent?.outsideImage}
         onOpen={handleDoorOpen}
         onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position, doorContent)}
-        isZoomed={selectedDoor === i + 1}
-        isDisabled={selectedDoor && selectedDoor !== i + 1}
+        isZoomed={selectedDoor === doorNumber}
+        isDisabled={selectedDoor && selectedDoor !== doorNumber}
+        isLocked={isLocked}
+        currentDay={currentDay}
       />
     )
   })
@@ -239,7 +243,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 }
 
 
-export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, ...props }) => {
+export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(false)
   const [hovered, setHovered] = useState(false)
@@ -302,7 +306,7 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
 
   const handleDoorClick = (e) => {
     e.stopPropagation()
-    if (!isOpen && !isDisabled) {
+    if (!isOpen && !isDisabled && !isLocked) {
       setIsOpen(true)
       onOpen?.(doorNumber)
     }
