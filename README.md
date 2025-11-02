@@ -1,5 +1,5 @@
 -[x] now remembers users and can preopen doors
--[ ] clicked doors should be saved to db (need new endpoint to save to numbers array in db) 
+-[x] clicked doors should be saved to db (need new endpoint to save to numbers array in db) 
 -[x] Each door can now have their own image
 -[x] IMPORTANT! Cut doors to match calender spot and add calender number
 -[x] host on aws

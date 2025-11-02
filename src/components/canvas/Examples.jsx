@@ -96,7 +96,7 @@ export const ZoomControls = ({ disabled = false, defaultDistance = 6 }) => {
 
 
 
-export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, currentDay, initiallyOpenDoors = [0], ...props }) => {
+export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, currentDay, username, initiallyOpenDoors = [0], ...props }) => {
   const groupRef = useRef(null)
   const { camera, mouse } = useThree()
   const [openedDoors, setOpenedDoors] = useState(new Set())
@@ -167,10 +167,32 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     }
   })
 
-  const handleDoorOpen = (doorNumber) => {
+  const handleDoorOpen = async (username, doorNumber) => {
     if (selectedDoor) return
     setOpenedDoors(prev => new Set(prev).add(doorNumber))
     console.log(`Door ${doorNumber} opened!`)
+
+    // Send door number to API
+    try {
+      const response = await fetch('/api/dooropen', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, doorNumber}),
+      })
+
+      console.log(response)
+      const data = await response.json()
+
+      if (data.success) {
+        console.log('Door number sent successfully:', data.data)
+      } else {
+        console.error('Failed to send door number:', data.error)
+      }
+    } catch (error) {
+      console.error('Error sending door number:', error)
+    }
   }
 
   const doors = Array.from({ length: 24 }, (_, i) => {
@@ -218,6 +240,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
         key={doorNumber}
         position={position}
         doorNumber={doorNumber}
+        username={username}
         content={doorContent}
         outsideImage={doorContent?.outsideImage}
         onOpen={handleDoorOpen}
@@ -245,7 +268,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 }
 
 
-export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, initialOpen = false, ...props }) => {
+export const Door = ({ position,username, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, initialOpen = false, ...props }) => {
   const doorRef = useRef()
   const [isOpen, setIsOpen] = useState(initialOpen)
   const [hovered, setHovered] = useState(false)
@@ -310,7 +333,7 @@ export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onCo
     e.stopPropagation()
     if (!isOpen && !isDisabled && !isLocked) {
       setIsOpen(true)
-      onOpen?.(doorNumber)
+      onOpen?.(username, doorNumber)
     }
   }
 

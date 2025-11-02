@@ -10,21 +10,6 @@ export default function Page() {
     router.push('/calender')
   }
 
-  // API call on component mount
-  useEffect(() => {
-    const callAPI = async () => {
-      try {
-        const response = await fetch('/api/hello');
-        const data = await response.json();
-        console.log(data); // Will log: { message: "Hello World" }
-      } catch (error) {
-        console.error('API call failed:', error);
-      }
-    };
-
-    callAPI();
-  }, []);
-
   return (
     <div
       onClick={handleClick}

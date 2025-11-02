@@ -40,7 +40,7 @@ export default function CalendarPage() {
         // TODO DELETE THIS - just for testing days
         setCurrentDay(data.data.day || 0)
         // setCurrentDay(3)
-        setDoorsOpened(data.data.numbers > 0 ? data.data.numbers : [1])
+        setDoorsOpened(data.data.numbers)
       } catch (error) {
         console.error('Failed to fetch current day:', error)
         setCurrentDay(0)
@@ -157,6 +157,7 @@ export default function CalendarPage() {
           selectedDoor={selectedDoor}
           doorPosition={doorPosition}
           currentDay={currentDay}
+          username={username}
           initiallyOpenDoors={doorsOpened}
         />
         <ZoomControls disabled={!!selectedDoor} defaultDistance={8} />
