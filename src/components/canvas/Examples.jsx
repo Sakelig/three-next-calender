@@ -294,6 +294,7 @@ export const Door = ({ position,username, doorNumber, content, outsideImage, onO
       if (content.type === 'image') {
         const loader = new THREE.TextureLoader()
         loader.load(content.src, (loadedTexture) => {
+          loadedTexture.needsUpdate = true
           setTexture(loadedTexture)
         })
       } else if (content.type === 'video') {
@@ -307,6 +308,7 @@ export const Door = ({ position,username, doorNumber, content, outsideImage, onO
         const videoTexture = new THREE.VideoTexture(video)
         videoTexture.minFilter = THREE.LinearFilter
         videoTexture.magFilter = THREE.LinearFilter
+        videoTexture.needsUpdate = true
 
         setTexture(videoTexture)
         videoRef.current = video
@@ -381,6 +383,7 @@ export const Door = ({ position,username, doorNumber, content, outsideImage, onO
       {/* Content behind door */}
       {isOpen && (
         <mesh
+          key={texture ? 'loaded' : 'loading'}
           position={[0, 0, 0.01]}
           onClick={handleContentClick}
           onPointerOver={() => !isZoomed && setHovered(true)}
