@@ -6,7 +6,7 @@
 -[x] should use my domain adventcalender.sakelig
 -[x] APIGATE way with simple go lambda
 -[x] frontend should call backend which should call the apigateway endpoint
--[ ] christmasi background for calender page, a bit blurred or something, just something instead of pure white
+-[ ] ??? christmasi background for calender page, a bit blurred or something, just something instead of pure white
 -[ ] add data locally to repo, should be fine dont need s3 i believe
 -[ ] ?s3 bucket with content
 -[ ] ?lambda gets content from s3 based on request

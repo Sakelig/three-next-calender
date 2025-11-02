@@ -1,7 +1,7 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { ZoomControls } from '@/components/canvas/Examples'
 import { useSpring, animated } from '@react-spring/web'
 
@@ -26,6 +26,7 @@ export default function CalendarPage() {
     },
     config: { tension: 80, friction: 20 }
   })
+
 
   // Initialize username from localStorage or generate new one
   useEffect(() => {
@@ -104,8 +105,94 @@ export default function CalendarPage() {
     }
   }, [selectedDoor])
 
+  // Use direct DOM manipulation for background animation to avoid re-renders
+  useEffect(() => {
+    const background = document.getElementById('parallax-background')
+    if (!background) return
+
+    let currentX = 0
+    let currentY = 0
+    let targetX = 0
+    let targetY = 0
+
+    const handleMouseMove = (event) => {
+      targetX = (event.clientX - window.innerWidth / 2) * 0.005
+      targetY = (event.clientY - window.innerHeight / 2) * 0.005
+    }
+
+    const animate = () => {
+      currentX += (targetX - currentX) * 0.1
+      currentY += (targetY - currentY) * 0.1
+
+      background.style.transform = `translate(${currentX}px, ${currentY}px) scale(1.1)`
+
+      requestAnimationFrame(animate)
+    }
+
+    window.addEventListener('mousemove', handleMouseMove)
+    const animationId = requestAnimationFrame(animate)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+      cancelAnimationFrame(animationId)
+    }
+  }, [])
+
+  // Memoize video player to prevent flickering
+  const videoPlayer = useMemo(() => {
+    if (!showVideoPlayer || !doorContent || doorContent.type !== 'video') {
+      return null
+    }
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        zIndex: 2000,
+        width: '80vw',
+        maxWidth: '800px',
+        backgroundColor: 'rgba(0,0,0,0.9)',
+        padding: '20px',
+        borderRadius: '10px',
+        animation: 'fadeIn 0.3s ease-out'
+      }}>
+        <video
+          src={doorContent.src}
+          controls
+          autoPlay
+          style={{
+            width: '100%',
+            height: 'auto',
+            maxHeight: '70vh'
+          }}
+        />
+      </div>
+    )
+  }, [showVideoPlayer, doorContent])
+
   return (
     <>
+      {/* Animated blurry background */}
+      <div
+        id="parallax-background"
+        style={{
+          position: 'fixed',
+          top: '-5%',
+          left: '-5%',
+          width: '110%',
+          height: '110%',
+          backgroundImage: 'url(/cozy-winter.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          filter: 'blur(8px)',
+          zIndex: -1,
+          transform: 'scale(1.1)',
+          transition: 'transform 0.1s ease-out'
+        }}
+      />
+
       <div className='mx-auto flex w-full flex-col flex-wrap items-center px-4 md:flex-row md:px-0 lg:w-4/5'>
         <div className='flex w-full flex-col items-start justify-center p-4 text-center sm:p-6 md:w-2/5 md:p-12 md:text-left'>
           <animated.p
@@ -137,32 +224,7 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {showVideoPlayer && doorContent?.type === 'video' && (
-        <div style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 2000,
-          width: '80vw',
-          maxWidth: '800px',
-          backgroundColor: 'rgba(0,0,0,0.9)',
-          padding: '20px',
-          borderRadius: '10px',
-          animation: 'fadeIn 0.3s ease-out'
-        }}>
-          <video
-            src={doorContent.src}
-            controls
-            autoPlay
-            style={{
-              width: '100%',
-              height: 'auto',
-              maxHeight: '70vh'
-            }}
-          />
-        </div>
-      )}
+      {videoPlayer}
 
       <View orbit className='absolute top-0 flex h-screen w-full flex-col items-center justify-center'>
         <Rectangle
