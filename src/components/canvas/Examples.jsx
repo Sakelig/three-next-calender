@@ -56,19 +56,6 @@ export const Logo = ({ route = '/blob', ...props }) => {
   )
 }
 
-export function Duck(props) {
-  const { scene } = useGLTF('/duck.glb')
-
-  useFrame((state, delta) => (scene.rotation.y += delta))
-
-  return <primitive object={scene} {...props} />
-}
-export function Dog(props) {
-  const { scene } = useGLTF('/dog.glb')
-
-  return <primitive object={scene} {...props} />
-}
-
 export const ZoomControls = ({ disabled = false, defaultDistance = 6 }) => {
   const { camera } = useThree()
 
@@ -103,8 +90,25 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   const [targetGroupPosition, setTargetGroupPosition] = useState(null)
   const [targetGroupScale, setTargetGroupScale] = useState(null)
   const [isAnimating, setIsAnimating] = useState(false)
+  const [hasLoaded, setHasLoaded] = useState(false)
 
   const texture = useTexture(imagePath)
+
+  // Add initial load animation
+  const { scale, opacity } = useSpring({
+    from: { scale: 0.1 },
+    to: { scale: hasLoaded ? 1 : 0.1 },
+    config: { tension: 80, friction: 20 },
+    // config: { duration: 1000},
+    delay: 50
+  })
+
+  // Trigger load animation when data is ready
+  useEffect(() => {
+    if (currentDay !== null && username) {
+      setHasLoaded(true)
+    }
+  }, [currentDay, username])
 
   useEffect(() => {
     if (selectedDoor && doorPosition) {
@@ -255,15 +259,13 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   })
 
   return (
-    <group ref={groupRef} {...props}>
+    <animated.group ref={groupRef} scale={scale} {...props}>
       <mesh>
         <boxGeometry args={[2.2, 2.8, 0.3]} />
-        <meshStandardMaterial
-          map={texture}
-        />
+        <meshStandardMaterial map={texture} />
       </mesh>
-      {doors}
-    </group>
+      {hasLoaded && doors}
+    </animated.group>
   )
 }
 

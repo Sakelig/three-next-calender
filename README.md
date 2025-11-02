@@ -6,8 +6,10 @@
 -[x] should use my domain adventcalender.sakelig
 -[x] APIGATE way with simple go lambda
 -[x] frontend should call backend which should call the apigateway endpoint
--[ ] s3 bucket with content
--[ ] lambda gets content from s3 based on request
+-[ ] christmasi background for calender page, a bit blurred or something, just something instead of pure white
+-[ ] add data locally to repo, should be fine dont need s3 i believe
+-[ ] ?s3 bucket with content
+-[ ] ?lambda gets content from s3 based on request
 -[x] handle new door and content each day
 -[ ] security group for amplify and lambda/api gateway
 -[x] Need to draw boxes

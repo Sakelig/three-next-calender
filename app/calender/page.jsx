@@ -3,6 +3,7 @@
 import dynamic from 'next/dynamic'
 import { useState, useEffect } from 'react'
 import { ZoomControls } from '@/components/canvas/Examples'
+import { useSpring, animated } from '@react-spring/web'
 
 const Rectangle = dynamic(() => import('@/components/canvas/Examples').then((mod) => mod.Rectangle), { ssr: false })
 const View = dynamic(() => import('@/components/canvas/View').then((mod) => mod.View), { ssr: false })
@@ -16,6 +17,15 @@ export default function CalendarPage() {
   const [currentDay, setCurrentDay] = useState(null)
   const [username, setUsername] = useState(null)
   const [doorsOpened, setDoorsOpened] = useState([0])
+
+  const dayAnimation = useSpring({
+    from: { transform: 'translateY(-50px)', opacity: 0 },
+    to: {
+      transform: currentDay !== null ? 'translateY(0px)' : 'translateY(-50px)',
+      opacity: currentDay !== null ? 1 : 0
+    },
+    config: { tension: 80, friction: 20 }
+  })
 
   // Initialize username from localStorage or generate new one
   useEffect(() => {
@@ -98,9 +108,12 @@ export default function CalendarPage() {
     <>
       <div className='mx-auto flex w-full flex-col flex-wrap items-center px-4 md:flex-row md:px-0 lg:w-4/5'>
         <div className='flex w-full flex-col items-start justify-center p-4 text-center sm:p-6 md:w-2/5 md:p-12 md:text-left'>
-          <p className='w-full text-xs uppercase sm:text-sm md:text-base'>
+          <animated.p
+            style={dayAnimation}
+            className='w-full text-2xl uppercase sm:text-2xl md:text-2xl'
+          >
             Day {currentDay !== null ? currentDay : '...'}
-          </p>
+          </animated.p>
           <h1 className='my-2 text-xl font-bold leading-tight sm:text-2xl md:my-4 md:text-5xl'>Wiggsters Anniversary Calendar</h1>
         </div>
       </div>
