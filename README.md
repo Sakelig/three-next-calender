@@ -1,5 +1,5 @@
--[ ] Need timer to show when next box opens
--[ ] clicked boxes should update the main site and show number as open for each user? save state locally?
+-[x] now remembers users and can preopen doors
+-[ ] clicked doors should be saved to db (need new endpoint to save to numbers array in db) 
 -[x] Each door can now have their own image
 -[x] IMPORTANT! Cut doors to match calender spot and add calender number
 -[x] host on aws
@@ -54,6 +54,7 @@
 
 ### not needed but could
 -[ ] discord login (check discrod notes for other stuff)
+-[ ] Need timer to show when next box opens
 ----------------------------
 
 [![Downloads](https://img.shields.io/npm/dt/create-r3f-app.svg?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/create-r3f-app) [![Discord Shield](https://img.shields.io/discord/740090768164651008?style=flat&colorA=000000&colorB=000000&label=discord&logo=discord&logoColor=ffffff)](https://discord.gg/ZZjjNvJ)

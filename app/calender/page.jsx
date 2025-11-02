@@ -14,16 +14,33 @@ export default function CalendarPage() {
   const [doorContent, setDoorContent] = useState(null)
   const [showVideoPlayer, setShowVideoPlayer] = useState(false)
   const [currentDay, setCurrentDay] = useState(null)
+  const [username, setUsername] = useState(null)
+  const [doorsOpened, setDoorsOpened] = useState([0])
 
-  // Fetch current day from API
+  // Initialize username from localStorage or generate new one
   useEffect(() => {
+    const storedUsername = localStorage.getItem('username')
+    const newUsername = generateUsername()
+    if (storedUsername) {
+      setUsername(storedUsername)
+    } else {
+      localStorage.setItem('username', newUsername)
+      setUsername(newUsername)
+    }
     const fetchCurrentDay = async () => {
       try {
-        const response = await fetch('/api/day')
+        const response = await fetch('/api/userstate',{
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({username: storedUsername ? storedUsername : newUsername}),
+        })
         const data = await response.json()
         // TODO DELETE THIS - just for testing days
-        // setCurrentDay(data.dayData?.day || 0)
-        setCurrentDay(3)
+        setCurrentDay(data.data.day || 0)
+        // setCurrentDay(3)
+        setDoorsOpened(data.data.numbers > 0 ? data.data.numbers : [1])
       } catch (error) {
         console.error('Failed to fetch current day:', error)
         setCurrentDay(0)
@@ -140,6 +157,7 @@ export default function CalendarPage() {
           selectedDoor={selectedDoor}
           doorPosition={doorPosition}
           currentDay={currentDay}
+          initiallyOpenDoors={doorsOpened}
         />
         <ZoomControls disabled={!!selectedDoor} defaultDistance={8} />
         <Common />
@@ -153,4 +171,14 @@ export default function CalendarPage() {
       `}</style>
     </>
   )
+}
+
+// Helper function to generate a random username
+const generateUsername = () => {
+  const adjectives = ['Happy', 'Jolly', 'Merry', 'Festive', 'Cheerful', 'Bright', 'Snowy', 'Cozy']
+  const nouns = ['Penguin', 'Snowman', 'Reindeer', 'Elf', 'Star', 'Snowflake', 'Bear', 'Fox']
+  const randomNum = Math.floor(Math.random() * 1000)
+  const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)]
+  const randomNoun = nouns[Math.floor(Math.random() * nouns.length)]
+  return `${randomAdj}${randomNoun}${randomNum}`
 }

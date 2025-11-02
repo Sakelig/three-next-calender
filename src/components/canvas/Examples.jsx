@@ -96,7 +96,7 @@ export const ZoomControls = ({ disabled = false, defaultDistance = 6 }) => {
 
 
 
-export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, currentDay, ...props }) => {
+export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, selectedDoor, doorPosition, currentDay, initiallyOpenDoors = [0], ...props }) => {
   const groupRef = useRef(null)
   const { camera, mouse } = useThree()
   const [openedDoors, setOpenedDoors] = useState(new Set())
@@ -209,6 +209,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
       24: { doorNumber: 20, type: 'video', src: '/door-videos/dummy-video.mp4', outsideImage: '/door-outside-images/door-24.png' }
     }
 
+    const shouldBeOpen = initiallyOpenDoors.includes(doorNumber)
     const doorContent = doorContents[i + 1]
     const isLocked = currentDay !== null && doorContent.doorNumber > currentDay
 
@@ -220,11 +221,12 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
         content={doorContent}
         outsideImage={doorContent?.outsideImage}
         onOpen={handleDoorOpen}
-        onContentClick={(doorNumber) => onDoorContentClick?.(doorNumber, position, doorContent)}
+        onContentClick={() => onDoorContentClick(doorContent.doorNumber, position, doorContent)}
         isZoomed={selectedDoor === doorNumber}
         isDisabled={selectedDoor && selectedDoor !== doorNumber}
         isLocked={isLocked}
         currentDay={currentDay}
+        initialOpen={shouldBeOpen}
       />
     )
   })
@@ -243,9 +245,9 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 }
 
 
-export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, ...props }) => {
+export const Door = ({ position, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, initialOpen = false, ...props }) => {
   const doorRef = useRef()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(initialOpen)
   const [hovered, setHovered] = useState(false)
   const [texture, setTexture] = useState(null)
   const videoRef = useRef()
