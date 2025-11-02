@@ -87,20 +87,25 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   const groupRef = useRef(null)
   const { camera, mouse } = useThree()
   const [openedDoors, setOpenedDoors] = useState(new Set())
-  const [targetGroupPosition, setTargetGroupPosition] = useState(null)
-  const [targetGroupScale, setTargetGroupScale] = useState(null)
-  const [isAnimating, setIsAnimating] = useState(false)
   const [hasLoaded, setHasLoaded] = useState(false)
 
   const texture = useTexture(imagePath)
 
   // Add initial load animation
-  const { scale, opacity } = useSpring({
-    from: { scale: 0.1 },
+  const { scale } = useSpring({
+    from: { scale: 0.01 },
     to: { scale: hasLoaded ? 1 : 0.1 },
     config: { tension: 80, friction: 20 },
-    // config: { duration: 1000},
     delay: 50
+  })
+
+  // Zoom animation with spring
+  const { position, zoomScale } = useSpring({
+    position: selectedDoor && doorPosition
+      ? [-doorPosition[0] * 5, -doorPosition[1] * 5, 0]
+      : [0, 0, 0],
+    zoomScale: selectedDoor ? 5 : 1,
+    config: { tension: 170, friction: 26 }
   })
 
   // Trigger load animation when data is ready
@@ -110,53 +115,9 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
     }
   }, [currentDay, username])
 
-  useEffect(() => {
-    if (selectedDoor && doorPosition) {
-      setIsAnimating(true)
-      const scaleFactor = 5
-
-      // More accurate centering - use the exact door position without multipliers
-      setTargetGroupPosition([
-        -doorPosition[0] * scaleFactor,
-        -doorPosition[1] * scaleFactor,
-        0
-      ])
-      setTargetGroupScale(scaleFactor)
-    } else if (selectedDoor === null) {
-      setIsAnimating(true)
-      setTargetGroupPosition([0, 0, 0])
-      setTargetGroupScale(1)
-    }
-  }, [selectedDoor, doorPosition])
-
-  useFrame((state, delta) => {
-    // Group animation only
-    if (targetGroupPosition && targetGroupScale !== null && isAnimating) {
-      const lerpFactor = 0.08
-
-      if (groupRef.current) {
-        // Animate group position and scale
-        groupRef.current.position.x += (targetGroupPosition[0] - groupRef.current.position.x) * lerpFactor
-        groupRef.current.position.y += (targetGroupPosition[1] - groupRef.current.position.y) * lerpFactor
-        groupRef.current.position.z += (targetGroupPosition[2] - groupRef.current.position.z) * lerpFactor
-
-        groupRef.current.scale.x += (targetGroupScale - groupRef.current.scale.x) * lerpFactor
-        groupRef.current.scale.y += (targetGroupScale - groupRef.current.scale.y) * lerpFactor
-        groupRef.current.scale.z += (targetGroupScale - groupRef.current.scale.z) * lerpFactor
-      }
-
-      const groupDistance = groupRef.current ? Math.sqrt(
-        Math.pow(targetGroupPosition[0] - groupRef.current.position.x, 2) +
-        Math.pow(targetGroupPosition[1] - groupRef.current.position.y, 2)
-      ) + Math.abs(targetGroupScale - groupRef.current.scale.x) : 0
-
-      if (groupDistance < 0.1) {
-        setIsAnimating(false)
-      }
-    }
-
-    // Handle group rotation smoothly
-    if (groupRef.current && !selectedDoor && !isAnimating) {
+  useFrame((state) => {
+    // Only handle rotation
+    if (groupRef.current && !selectedDoor) {
       const targetRotationY = mouse.x * -0.4
       const targetRotationX = mouse.y * 0.3
 
@@ -164,7 +125,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
       groupRef.current.rotation.x += (targetRotationX - groupRef.current.rotation.x) * 0.1
     }
 
-    // Lock rotation when zoomed in
+    // Lock rotation when zoomed
     if (selectedDoor && groupRef.current) {
       groupRef.current.rotation.y = 0
       groupRef.current.rotation.x = 0
@@ -259,7 +220,12 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   })
 
   return (
-    <animated.group ref={groupRef} scale={scale} {...props}>
+    <animated.group
+      ref={groupRef}
+      scale={scale.to(s => zoomScale.get() * s)}
+      position={position}
+      {...props}
+    >
       <mesh>
         <boxGeometry args={[2.2, 2.8, 0.3]} />
         <meshStandardMaterial map={texture} />
