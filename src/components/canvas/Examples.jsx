@@ -6,7 +6,7 @@ import * as THREE from 'three'
 import { useMemo, useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useDrag } from '@use-gesture/react'
-import { useSpring, animated } from '@react-spring/three'
+import { useSpring, animated, to } from '@react-spring/three'
 
 
 export const Blob = ({ route = '/', ...props }) => {
@@ -91,16 +91,9 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
 
   const texture = useTexture(imagePath)
 
-  // Add initial load animation
-  const { scale } = useSpring({
-    from: { scale: 0.01 },
-    to: { scale: hasLoaded ? 1 : 0.1 },
-    config: { tension: 80, friction: 20 },
-    delay: 50
-  })
-
-  // Zoom animation with spring
-  const { position, zoomScale } = useSpring({
+  // Combined animation for load and zoom
+  const { loadScale, position, zoomScale } = useSpring({
+    loadScale: hasLoaded ? 1 : 0.001,
     position: selectedDoor && doorPosition
       ? [-doorPosition[0] * 5, -doorPosition[1] * 5, 0]
       : [0, 0, 0],
@@ -222,7 +215,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   return (
     <animated.group
       ref={groupRef}
-      scale={scale.to(s => zoomScale.get() * s)}
+      scale={to([loadScale, zoomScale], (load, zoom) => load * zoom)}
       position={position}
       {...props}
     >
