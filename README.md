@@ -18,41 +18,13 @@
 -[x] node cutDoors.js to make the doors
 
 
+## BUGS
+- having a image more on the right side makes it slightly darker for some reason. (NVM JUST NEED TO REFRESH)
+
 ## image data
-- image scale size 1311 × 1668 pixels (can use pixler but need premium??) 
-- door size 208 x 256 pixels (door data seems slihtly wrong??)
-- door positions:
-  Row 1:
-  Door 1: x=109, y=90
-  Door 2: x=317, y=90
-  Door 3: x=524, y=90
-  Door 4: x=732, y=90
-  Door 5: x=940, y=90
-  Door 6: x=1147, y=90
+- use "node cutDoors.js" to get the doors cut of the image, remeember to update input const src on the script yourself.
 
-  Row 2:
-  Door 7: x=109, y=419
-  Door 8: x=317, y=419
-  Door 9: x=524, y=419
-  Door 10: x=732, y=419
-  Door 11: x=940, y=419
-  Door 12: x=1147, y=419
 
-  Row 3:
-  Door 13: x=109, y=748
-  Door 14: x=317, y=748
-  Door 15: x=524, y=748
-  Door 16: x=732, y=748
-  Door 17: x=940, y=748
-  Door 18: x=1147, y=748
-
-  Row 4:
-  Door 19: x=109, y=1077
-  Door 20: x=317, y=1077
-  Door 21: x=524, y=1077
-  Door 22: x=732, y=1077
-  Door 23: x=940, y=1077
-  Door 24: x=1147, y=1077
 
 ### not needed but could
 -[ ] discord login (check discrod notes for other stuff)
