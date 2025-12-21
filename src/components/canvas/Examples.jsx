@@ -183,7 +183,7 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
       18: { doorNumber: 23, type: 'image', src: '/door-content/dummy-image.png', outsideImage: '/door-outside-images/door-18.png' },
       19: { doorNumber: 18, type: 'image', src: '/door-content/wiggy2.jpg', outsideImage: '/door-outside-images/door-19.png' },
       20: { doorNumber: 14, type: 'image', src: '/door-content/noggya.png', outsideImage: '/door-outside-images/door-20.png' },
-      21: { doorNumber: 22, type: 'image', src: '/door-content/dummy-image.png', outsideImage: '/door-outside-images/door-21.png' },
+      21: { doorNumber: 22, type: 'youtube', src: 'https://www.youtube.com/watch?v=uERiiLC0748', outsideImage: '/door-outside-images/door-21.png' },
       22: { doorNumber: 16, type: 'image', src: '/door-content/nyl_stare.PNG', outsideImage: '/door-outside-images/door-22.png' },
       23: { doorNumber: 9, type: 'image', src: '/door-content/nyl_pool_party.PNG', outsideImage: '/door-outside-images/door-23.png' },
       24: { doorNumber: 20, type: 'video', src: '/door-content/wiggstermovi.mp4', outsideImage: '/door-outside-images/door-24.png' }
@@ -228,6 +228,13 @@ export const Rectangle = ({ imagePath='/The_Wiggsters.jpg', onDoorContentClick, 
   )
 }
 
+
+// Helper function to extract YouTube video ID from URL
+const getYouTubeVideoId = (url) => {
+  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+  const match = url.match(regExp)
+  return (match && match[7].length === 11) ? match[7] : null
+}
 
 export const Door = ({ position,username, doorNumber, content, outsideImage, onOpen, onContentClick, isZoomed, isDisabled, isLocked, initialOpen = false, ...props }) => {
   const doorRef = useRef()
@@ -276,6 +283,23 @@ export const Door = ({ position,username, doorNumber, content, outsideImage, onO
 
         if (isZoomed) {
           video.play()
+        }
+      } else if (content.type === 'youtube') {
+        // For YouTube, load the thumbnail image
+        const videoId = getYouTubeVideoId(content.src)
+        if (videoId) {
+          const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+          const loader = new THREE.TextureLoader()
+          loader.load(thumbnailUrl, (loadedTexture) => {
+            loadedTexture.needsUpdate = true
+            setTexture(loadedTexture)
+          }, undefined, () => {
+            // Fallback to standard quality thumbnail if maxres fails
+            loader.load(`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`, (loadedTexture) => {
+              loadedTexture.needsUpdate = true
+              setTexture(loadedTexture)
+            })
+          })
         }
       }
     }

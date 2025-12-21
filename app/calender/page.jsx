@@ -54,6 +54,7 @@ export default function CalendarPage() {
         setDoorsOpened(data.data.numbers)
       } catch (error) {
         console.error('Failed to fetch current day:', error)
+        // setCurrentDay(2)
         setCurrentDay(0)
       }
     }
@@ -82,7 +83,7 @@ export default function CalendarPage() {
   }
 
   useEffect(() => {
-    if (selectedDoor && doorContent?.type === 'video') {
+    if (selectedDoor && (doorContent?.type === 'video' || doorContent?.type === 'youtube')) {
       const timer = setTimeout(() => {
         setShowVideoPlayer(true)
       }, 500)
@@ -140,8 +141,22 @@ export default function CalendarPage() {
 
   // Memoize video player to prevent flickering
   const videoPlayer = useMemo(() => {
-    if (!showVideoPlayer || !doorContent || doorContent.type !== 'video') {
+    if (!showVideoPlayer || !doorContent || (doorContent.type !== 'video' && doorContent.type !== 'youtube')) {
       return null
+    }
+
+    const isYouTube = doorContent.type === 'youtube'
+
+    // Extract YouTube video ID if it's a YouTube link
+    let embedUrl = doorContent.src
+    if (isYouTube) {
+      const getYouTubeVideoId = (url) => {
+        const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/
+        const match = url.match(regExp)
+        return (match && match[7].length === 11) ? match[7] : null
+      }
+      const videoId = getYouTubeVideoId(doorContent.src)
+      embedUrl = videoId ? `https://www.youtube.com/embed/${videoId}?autoplay=1` : doorContent.src
     }
 
     return (
@@ -158,16 +173,32 @@ export default function CalendarPage() {
         borderRadius: '10px',
         animation: 'fadeIn 0.3s ease-out'
       }}>
-        <video
-          src={doorContent.src}
-          controls
-          autoPlay
-          style={{
-            width: '100%',
-            height: 'auto',
-            maxHeight: '70vh'
-          }}
-        />
+        {isYouTube ? (
+          <iframe
+            width="100%"
+            height="450"
+            src={embedUrl}
+            title="YouTube video player"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+            style={{
+              borderRadius: '5px',
+              maxHeight: '70vh'
+            }}
+          />
+        ) : (
+          <video
+            src={doorContent.src}
+            controls
+            autoPlay
+            style={{
+              width: '100%',
+              height: 'auto',
+              maxHeight: '70vh'
+            }}
+          />
+        )}
       </div>
     )
   }, [showVideoPlayer, doorContent])
